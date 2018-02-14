@@ -1,0 +1,160 @@
+delimiters "{","}"
+template(soapHeader,msisdn,sim,cust_name,maiden_name,mothers_name,birth_place,birth_date,email,doc_type,doc_num) ::= <<
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:jms1="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+	<env:Header xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"/>
+	<SOAP-ENV:Body>
+		<ns3:CreateDocumentV2Request xmlns:ns4="http://xmlns.vodafone.hu/TechnicalObject/Common/V1" xmlns:ns3="http://xmlns.vodafone.hu/BusinessMessage/CustomerCareInterface/DocumentService/V1.4" xmlns:ns8="http://xmlns.vodafone.hu/BusinessObject/Document/V1">
+			<ns4:Header>
+				<ns4:TraceIdentifier>
+					<ns4:ApplicationId>{soapHeader.appID}</ns4:ApplicationId>
+					<ns4:ReferenceId>{soapHeader.refID}</ns4:ReferenceId>
+					<ns4:ServiceId>{soapHeader.serviceID}</ns4:ServiceId>
+					<ns4:SenderTimestamp>{soapHeader.timestamp}</ns4:SenderTimestamp>
+				</ns4:TraceIdentifier>
+				<ns4:ClientTimeout>{soapHeader.timeout}</ns4:ClientTimeout>
+			</ns4:Header>
+			<ns3:Input xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns8:XmlDataSource">
+				<ns8:Content>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;ContractData&gt;
+	&lt;header&gt;
+		&lt;contract_id&gt;%CONTRACT_NUM%&lt;/contract_id&gt;
+                &lt;tariff_name&gt;%TARIFF_NAME%&lt;/tariff_name&gt;
+                &lt;msisdn&gt;{msisdn}&lt;/msisdn&gt;
+                &lt;sim&gt;{sim}&lt;/sim&gt;
+                &lt;regDate&gt;%CONTRACT_DATE%&lt;/regDate&gt;
+	&lt;/header&gt;
+	&lt;contact&gt;
+                &lt;name&gt;{cust_name}&lt;/name&gt;
+                &lt;maiden_name&gt;{maiden_name}&lt;/maiden_name&gt;
+                &lt;mothers_name&gt;{mothers_name}&lt;/mothers_name&gt;
+                &lt;birth_place&gt;{birth_place}&lt;/birth_place&gt;
+                &lt;birth_date&gt;{birth_date}&lt;/birth_date&gt;
+                &lt;email&gt;{email}&lt;/email&gt;
+                &lt;doc_type&gt;{doc_type}&lt;/doc_type&gt;
+                &lt;doc_id&gt;{doc_num}&lt;/doc_id&gt;
+	&lt;/contact&gt;
+	&lt;address&gt;
+                &lt;postal_code&gt;%ZIP_CODE%&lt;/postal_code&gt;
+                &lt;city&gt;%CITY%&lt;/city&gt;
+                &lt;street_line1&gt;%ADDR_LINE1%&lt;/street_line1&gt;
+                &lt;street_line2&gt;%ADDR_LINE2%&lt;/street_line2&gt;
+                &lt;building&gt;%BUILDING%&lt;/building&gt;
+                &lt;floor&gt;%FLOOR%&lt;/floor&gt;
+                &lt;door&gt;%DOOR%&lt;/door&gt;
+                &lt;entrance&gt;&lt;/entrance&gt;
+	&lt;/address&gt;
+&lt;/ContractData&gt;</ns8:Content>
+				<ns8:Format>XML</ns8:Format>
+			</ns3:Input>
+			<ns3:Parameters xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+				<ns8:OutputFormat>TIFF</ns8:OutputFormat>
+				<ns8:BaseUrl/>
+				<ns8:InputBytesID/>
+				<ns8:OutputBytesID/>
+				<ns8:Template xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns8:ServerDocumentTemplate">
+					<ns8:XSLTParameters/>
+					<ns8:XSLTEngine>MSXML</ns8:XSLTEngine>
+					<ns8:LanguageID/>
+					<ns8:ID>VodafoneTemplates:PrepaidBULK.xfd</ns8:ID>
+				</ns8:Template>
+				<ns8:MiscellaneousSettings/>
+				<ns8:HtmlInputSettings/>
+				<ns8:RasterOutputSettings/>
+				<ns8:AFPOutputSettings/>
+				<ns8:PDFOutputSettings>
+					<ns8:AllowPrinting>false</ns8:AllowPrinting>
+					<ns8:AllowModifyContents>false</ns8:AllowModifyContents>
+					<ns8:AllowCopy>false</ns8:AllowCopy>
+					<ns8:AllowModifyAnnotations>false</ns8:AllowModifyAnnotations>
+					<ns8:AllowFillIn>false</ns8:AllowFillIn>
+					<ns8:AllowScreenReaders>false</ns8:AllowScreenReaders>
+					<ns8:AllowAssembly>false</ns8:AllowAssembly>
+					<ns8:AllowDegradedPrinting>false</ns8:AllowDegradedPrinting>
+					<ns8:EncryptionStrength>0</ns8:EncryptionStrength>
+					<ns8:UserPassword/>
+					<ns8:OwnerPassword/>
+				</ns8:PDFOutputSettings>
+				<ns8:PrintOutputSettings>
+					<ns8:PrinterName/>
+					<ns8:OutputPrintFile/>
+					<ns8:InputTray/>
+					<ns8:OutputTray/>
+				</ns8:PrintOutputSettings>
+				<ns8:HtmlOutputSettings>
+					<ns8:RenderedImagesBaseUrl/>
+					<ns8:RenderedImagesOutputFolder/>
+				</ns8:HtmlOutputSettings>
+				<ns8:TxtOutputSettings/>
+			</ns3:Parameters>
+			<ns3:Filename xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">This_file_name_{msisdn}.tiff</ns3:Filename>
+			<ns3:ExpirationDate xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">{soapHeader.expirationDate}</ns3:ExpirationDate>
+			<ns3:StoreParameters xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+				<ns8:ArchiveIndicator>true</ns8:ArchiveIndicator>
+				<ns8:DocumentType>-101</ns8:DocumentType>
+				<ns8:DocumentOwner>VOD880</ns8:DocumentOwner>
+				<ns8:SourceSystem>PrepaidContractBULK</ns8:SourceSystem>
+				<ns8:InheritParentAttributes>false</ns8:InheritParentAttributes>
+				<ns8:AttributeList>
+					<ns8:Attribute>
+						<ns8:Key>ContractType</ns8:Key>
+						<ns8:Value>Szerződés</ns8:Value>
+					</ns8:Attribute>
+					<ns8:Attribute>
+						<ns8:Key>DocumentType</ns8:Key>
+						<ns8:Value>-101</ns8:Value>
+					</ns8:Attribute>
+					<ns8:Attribute>
+						<ns8:Key>MainContractType</ns8:Key>
+						<ns8:Value>0</ns8:Value>
+					</ns8:Attribute>
+					<ns8:Attribute>
+						<ns8:Key>ContractNum</ns8:Key>
+						<ns8:Value>%CONTRACT_NUM%</ns8:Value>
+					</ns8:Attribute>
+					<ns8:Attribute>
+						<ns8:Key>ContractDate</ns8:Key>
+						<ns8:Value>%CONTRACT_DATE%</ns8:Value>
+					</ns8:Attribute>
+					<ns8:Attribute>
+						<ns8:Key>CustomerName</ns8:Key>
+						<ns8:Value>%CUST_NAME%</ns8:Value>
+					</ns8:Attribute>
+					<ns8:Attribute>
+						<ns8:Key>FileName</ns8:Key>
+						<ns8:Value>PREPAID_Contract</ns8:Value>
+					</ns8:Attribute>
+					<ns8:Attribute>
+						<ns8:Key>FileExtension</ns8:Key>
+						<ns8:Value>tiff</ns8:Value>
+					</ns8:Attribute>
+					<ns8:Attribute>
+						<ns8:Key>isSimOnly</ns8:Key>
+						<ns8:Value>1</ns8:Value>
+					</ns8:Attribute>
+					<ns8:Attribute>
+						<ns8:Key>MSISDN</ns8:Key>
+						<ns8:Value>{msisdn}</ns8:Value>
+					</ns8:Attribute>
+					<ns8:Attribute>
+						<ns8:Key>SIM</ns8:Key>
+						<ns8:Value>{sim}</ns8:Value>
+					</ns8:Attribute>
+					<ns8:Attribute>
+						<ns8:Key>DealerCode</ns8:Key>
+						<ns8:Value>VOD999</ns8:Value>
+					</ns8:Attribute>
+					<ns8:Attribute>
+						<ns8:Key>SalesId</ns8:Key>
+						<ns8:Value>20004</ns8:Value>
+					</ns8:Attribute>
+					<ns8:Attribute>
+						<ns8:Key>IDCardNum</ns8:Key>
+						<ns8:Value>%DOC_NUM%</ns8:Value>
+					</ns8:Attribute>
+				</ns8:AttributeList>
+			</ns3:StoreParameters>
+		</ns3:CreateDocumentV2Request>
+	</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+>>

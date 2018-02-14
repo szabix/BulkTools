@@ -1,0 +1,31 @@
+delimiters "{","}"
+template(soapHeader,msisdn,SMS_text) ::= <<
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://xmlns.vodafone.hu/BusinessMessage/SmsProxyInterface/SmsProxyService/V1.0" xmlns:v11="http://xmlns.vodafone.hu/TechnicalObject/Common/V1">
+<soapenv:Header/>
+<soapenv:Body>
+	<v1:SendTextSmsV2Request>
+{if(soapHeader)}
+		<v11:Header>
+			<v11:TraceIdentifier>
+				<v11:ApplicationId>{soapHeader.appID}</v11:ApplicationId>
+				<v11:ReferenceId>{soapHeader.refID}</v11:ReferenceId>
+				<v11:ServiceId>{soapHeader.serviceID}</v11:ServiceId>
+				<v11:SenderTimestamp>{soapHeader.timestamp}</v11:SenderTimestamp>
+			</v11:TraceIdentifier>
+			<v11:ClientTimeout>{soapHeader.timeout}</v11:ClientTimeout>
+		</v11:Header>
+{endif}
+		<v1:Source>+36707001118</v1:Source>
+{if(msisdn)}
+		<v1:Destination>{msisdn}</v1:Destination>
+{endif}
+{if(SMS_text)}
+		<v1:Text><![CDATA[{SMS_text}]]></v1:Text>
+{endif}
+		<v1:StatusReportRequest>0</v1:StatusReportRequest>
+	</v1:SendTextSmsV2Request>
+</soapenv:Body>
+</soapenv:Envelope>
+
+>>

@@ -1,0 +1,1 @@
+java -classpath include/mail.jar;include/SBX_inventory.jar;sbx_prepaid_creator.jar CreatePrepaidContractsBulk

@@ -1,0 +1,290 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://xmlns.vodafone.hu/TechnicalObject/Common/V1" xmlns="http://xmlns.vodafone.hu/TechnicalObject/Common/V1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:simpleType name="CompletionStatusType">
+		<xs:annotation>
+			<xs:documentation>An enumeration of possible completion statuses.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="yes">
+				<xs:annotation>
+					<xs:documentation>Indicates that although a fault has happened, the operation has committed successfully.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="maybe">
+				<xs:annotation>
+					<xs:documentation>Indicates that the completion of the operation is unknown.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="no">
+				<xs:annotation>
+					<xs:documentation>Indicates that the operation has not committed successfully.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="VodafoneFinderRequestType">
+		<xs:annotation>
+			<xs:documentation>The object VodafoneFinderRequestType is the parent of all finder requests, any finder request in the system must be an extension of this object. The extension itself needs not be modelled, it will be generated automatically if the finder attribute is set on the service correctly.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="VodafoneBaseRequestType">
+				<xs:sequence>
+					<xs:element maxOccurs="1" name="MaxResultNumber" type="xs:integer">
+						<xs:annotation>
+							<xs:documentation>The number of results to return. The service must not return more than the specified number of result items.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="VodafoneFinderResponseType">
+		<xs:annotation>
+			<xs:documentation>The object VodafoneFinderResponseType is the parent of all finder responses, any finder response in the system must be an extension of this object. The extension itself needs not be modelled, it will be generated automatically if the finder attribute is set on the service correctly.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="VodafoneBaseResponseType">
+				<xs:sequence>
+					<xs:element maxOccurs="1" minOccurs="0" name="MoreResult" type="xs:boolean">
+						<xs:annotation>
+							<xs:documentation>Indicates whether more results are available. If more results are present, the client should make another, more accurate finder request if necessary. Must be included in case of a normal response.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SystemFaultType">
+		<xs:annotation>
+			<xs:documentation>This type is a representation of a single fault.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element maxOccurs="1" name="Originator" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The system the fault originates from.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" name="FaultTimestamp" type="xs:dateTime">
+				<xs:annotation>
+					<xs:documentation>The timestamp of the error.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" name="FaultCode" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Unique message id (the uniqueness is guaranteed only under the same originator).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" minOccurs="0" name="FaultSubCode" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Message subcode, if present.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" minOccurs="0" name="ExceptionClass" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The type of the exception if known.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" minOccurs="0" name="StacktraceString" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The stacktrace of the fault if it’s possible to retrieve that from the service provide.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" minOccurs="0" name="Completed" type="CompletionStatusType">
+				<xs:annotation>
+					<xs:documentation>Indicates whether the service call has been completed or not if it is known. Must have one of the values yes, no, maybe.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" name="ErrorMessage" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The error message in a human-readable form. Might contain a code of the error message, not necessarily a message that can be put onto a screen.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="HeaderType">
+		<xs:annotation>
+			<xs:documentation>Every request and response must contain these informations must contain these informations.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element maxOccurs="1" name="TraceIdentifier" type="TraceIdentifierType">
+				<xs:annotation>
+					<xs:documentation>The trace identifier is used for auditing and message control.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" name="ClientTimeout" type="xs:integer">
+				<xs:annotation>
+					<xs:documentation>Maximum timeout the service consumer wants to wait for the reply.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="NameValue" type="NameValueType">
+				<xs:annotation>
+					<xs:documentation>Application-specific extensions, these will be ignored by the ESB.
+Siebel will not use and populate this section of header. All elements will be defined explicitly as part of message body. 
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="VodafoneBaseResponseType">
+		<xs:annotation>
+			<xs:documentation>The object VodafoneBaseResponseType is the parent of all responses, any response in the system must be an extension of this object. The extension itself needs not be modelled, it will be generated automatically.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element maxOccurs="1" name="Header" type="HeaderType">
+				<xs:annotation>
+					<xs:documentation>The common header. Must be included in case of a normal response.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" minOccurs="0" name="ServiceFault" type="ServiceFaultType">
+				<xs:annotation>
+					<xs:documentation>The common error type. Must be included in case of an erroneous response.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="VodafoneBaseRequestType">
+		<xs:annotation>
+			<xs:documentation>The object VodafoneBaseRequestType is the parent of all requests, any request in the system must be an extension of this object. The extension itself needs not be modelled, it will be generated automatically.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element maxOccurs="1" name="Header" type="HeaderType">
+				<xs:annotation>
+					<xs:documentation>The common header.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="CheckPoint" type="CheckPointType">
+				<xs:annotation>
+					<xs:documentation>If the it is a resubmission of the service it is possible to provide status information in form of checkpoints. The implementation of the service may continue a previous execution based on checkpoint.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ServiceFaultType">
+		<xs:annotation>
+			<xs:documentation>Every erroneous response must contain these informations</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element maxOccurs="unbounded" minOccurs="1" name="SystemFault" type="SystemFaultType">
+				<xs:annotation>
+					<xs:documentation>The faults which occurred.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="CheckPoint" type="CheckPointType">
+				<xs:annotation>
+					<xs:documentation>To be able to resubmit a service call after a of the service it is possible to provide status information in form of checkpoints. The implementation of the service may continue a previous execution based on checkpoint.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TraceIdentifierType">
+		<xs:annotation>
+			<xs:documentation>All request and response message pairs should include a trace identifier element.  The trace identifier is used for auditing and message control, including control of double-submission for update operations, as described in the patterns “Request auditing” and “Submission tracking”.  </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element maxOccurs="1" name="ApplicationId" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The Application is the originator of the operation invocation. Each application will be given a unique identity.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" minOccurs="0" name="CorrelationId" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Unique id on the service consumer side but it’s the same for each service call in case of composite services.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" minOccurs="0" name="IdentityId" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The identity ID describes the identity of the user that has initiated the service request. This may be, for example, the customer, or an internal user, or may identify a special system user for calls made by automated systems. This is different from the application ID. The Identity ID is of the end user of the system (e.g. the customer using an application on their mobile phone) while the application ID is the calling system.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" name="ReferenceId" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>This is a unique (within the application) reference string that can be used to identify uniquely an operation request. This would allow an operation implementation to detect accidental double submission of a call by checking that this reference ID has not previously been passed for this operation by the application identified by the service ID. It is the responsibility of the originating application to generate these unique IDs.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" name="ServiceId" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>This is the id of a particular service. This id is coming from the UML model from the complete BusinessService path include the service and the operation names in the path? 
+e.g. 
+http://xmlns.vodafone.hu/BusinessService/Account/V1/AccountService/getBillingAccount</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" name="SenderTimestamp" type="xs:dateTime">
+				<xs:annotation>
+					<xs:documentation>The timestamp of the service call.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" minOccurs="0" name="SessionId" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>If the service call is a result of a user interaction, the session id of the user if applicable.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="unbounded" minOccurs="0" name="GroupId" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Groups the logged in user is member of (used for access control).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NameValueType">
+		<xs:annotation>
+			<xs:documentation>Type for name value pairs in the header.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element maxOccurs="1" name="Name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Name which identifies the semantics of the given value.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" name="Value" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The value itself.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="CheckPointStatusType">
+		<xs:annotation>
+			<xs:documentation>An enumeration of possible checkpoint statuses.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Not reached">
+				<xs:annotation>
+					<xs:documentation>Indicates that the operation has not committed successfully.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Completed">
+				<xs:annotation>
+					<xs:documentation>Indicates that although a fault has happened, the operation has committed successfully.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Timeout">
+				<xs:annotation>
+					<xs:documentation>Indicates that the operation has not committed successfully.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Non recoverable error">
+				<xs:annotation>
+					<xs:documentation>Indicates that the completion of the operation is unknown.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="Recoverable error">
+				<xs:annotation>
+					<xs:documentation>Indicates that the completion of the operation is unknown.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="CheckPointType">
+		<xs:sequence>
+			<xs:element maxOccurs="1" name="Name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Name of the element uniquely identifying this checkpoint within a service.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element maxOccurs="1" name="Status" type="CheckPointStatusType"/>
+			<xs:element maxOccurs="1" minOccurs="0" name="Content" type="xs:anyType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Header" type="HeaderType"/>
+</xs:schema>

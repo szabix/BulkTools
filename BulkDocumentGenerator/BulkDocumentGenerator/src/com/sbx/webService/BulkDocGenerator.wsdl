@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://www.sbx.hu/BulkDocCreate"
+    xmlns:tns="http://www.sbx.hu/BulkDocCreate"
+    xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:wsoap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:cm="http://xmlns.vodafone.hu/TechnicalObject/Common/V1"
+    >
+    <!--    xmlns:ws="http://www.sbx.hu/BulkDocCreate" -->
+    <wsdl:types>
+        <xs:schema>
+            <xs:import namespace="http://xmlns.vodafone.hu/TechnicalObject/Common/V1" schemaLocation="CommonTypes_V1.xsd"/>
+            <xs:element name="BulkDocCreateInput">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="cm:VodafoneBaseRequestType">
+                            <xs:sequence>
+                                <xs:element name="BulkDocRequest">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="pluginName" type="xs:string" minOccurs="1" maxOccurs="1"></xs:element>
+                                            <xs:element name="sendToEmail" type="booleanInt" minOccurs="1" maxOccurs="1">
+                                                <xs:annotation>
+                                                    <xs:documentation>Valid values:
+0- no need to send via eMail
+1- send via Email
+                                                </xs:documentation>
+                                                </xs:annotation>
+                                            </xs:element>
+                                            <xs:element name="sendSMS" type="booleanInt" minOccurs="1" maxOccurs="1">
+                                                <xs:annotation>
+                                                    <xs:documentation>Valid values:
+0- no need to send SMS
+1- send SMS on Success
+                                                    </xs:documentation>
+                                                </xs:annotation>
+                                            </xs:element>
+                                            <xs:element name="sms_params" type="smsParams" minOccurs="0" maxOccurs="1"></xs:element>
+                                            <xs:element name="email_params" type="emailParams" minOccurs="0" maxOccurs="1"></xs:element>
+                                            <xs:element name="document_params" type="docParams" minOccurs="1" maxOccurs="1"></xs:element>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            
+            <xs:complexType name="smsParams">
+                <xs:sequence>
+                    <xs:element name="originator" type="PhoneNumberType" minOccurs="1" maxOccurs="1"></xs:element>
+                    <xs:element name="MSISDN" type="PhoneNumberType" minOccurs="1" maxOccurs="1"></xs:element>
+                    <xs:element name="text" type="xs:string" minOccurs="1" maxOccurs="1"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="emailParams">
+                <xs:sequence>
+                    <xs:element name="templateName" type="xs:string" minOccurs="1" maxOccurs="1"></xs:element>
+                    <xs:element name="convertTIFF2PDF" type="booleanInt" maxOccurs="1"></xs:element>
+                    <xs:element name="encryptPDF" type="booleanInt" maxOccurs="1"></xs:element>
+                    <xs:element name="sender" type="emailSender" minOccurs="1" maxOccurs="1"></xs:element>
+                    <xs:element name="subject" type="xs:string" minOccurs="1" maxOccurs="1"></xs:element>
+                    <xs:element name="recipients" type="emailRecipients" minOccurs="1" maxOccurs="1"></xs:element>
+                    <xs:element name="tempalte_params" type="templateParams" minOccurs="0" maxOccurs="1"></xs:element>
+                </xs:sequence>
+            </xs:complexType>                
+
+            <xs:complexType name="docParams">
+                <xs:sequence>
+                    <xs:element name="templateName" type="xs:string"></xs:element>
+                    <xs:element name="template_params" type="templateParams" minOccurs="0" maxOccurs="1"></xs:element>
+                </xs:sequence>
+            </xs:complexType>                
+            
+            <xs:complexType name="emailSender">
+                <xs:sequence>
+                    <xs:element name="from" type="xs:string"></xs:element>
+                    <xs:element name="text_sender" type="xs:string" minOccurs="0"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            
+            <xs:complexType name="emailRecipients">
+                <xs:sequence>
+                    <xs:element name="to" type="addressList"></xs:element>
+                    <xs:element name="cc" type="addressList"></xs:element>
+                    <xs:element name="bcc" type="addressList"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="addressList">
+                <xs:sequence>
+                    <xs:element name="address" type="xs:string" minOccurs="0"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="templateParams">
+                <xs:sequence>
+                    <xs:element name="param" type="paramEntry" minOccurs="1"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            
+            <xs:complexType name="paramEntry">
+                <xs:sequence>
+                    <xs:element name="name" type="xs:string"></xs:element>
+                    <xs:element name="value" type="xs:string"></xs:element>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:simpleType name="PhoneNumberType">
+                <xs:annotation>
+                    <xs:documentation>Phone number in international format, without spaces. E.g: +3670XXXXXXX</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                    <xs:minLength value="9"/>
+                    <xs:maxLength value="20"/>
+                </xs:restriction>
+            </xs:simpleType>
+            
+            <xs:simpleType name="booleanInt">
+                <xs:annotation>
+                    <xs:documentation>Phone number in international format, without spaces. E.g: +3670XXXXXXX</xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:int">
+                    <xs:enumeration value="0"/>
+                    <xs:enumeration value="1"/>
+                </xs:restriction>
+            </xs:simpleType>
+            
+            <xs:element name="BulkDocCreateOutput">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="refID" type="xs:string"></xs:element>
+                        <xs:element name="timeStamp" type="xs:dateTime"></xs:element>
+                        <xs:element name="response" type="xs:string"></xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>    
+    
+    <wsdl:message name="BulkDocCreateInputMsg">
+        <wsdl:part name="Body" element="BulkDocCreateInput"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="BulkDocCreateOutputMsg">
+        <wsdl:part name="Body" element="BulkDocCreateOutput"></wsdl:part>
+    </wsdl:message>
+    
+    <wsdl:portType name="BulkDocCreateHttpInterface">
+        <wsdl:operation name="RequestDocument">
+            <wsdl:input message="tns:BulkDocCreateInputMsg"></wsdl:input>
+            <wsdl:output message="tns:BulkDocCreateOutputMsg"></wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    
+    <wsdl:binding name="BulkDocCreateHttpInterfaceBinding" type="tns:BulkDocCreateHttpInterface">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="RequestDocument">
+            <soap:operation soapAction="http://xmlns.sbx.hu/BulkDocCreate/RequestDocument" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    
+    <wsdl:service name="BulkDocCreate">
+        <wsdl:port name="BulkDocCreateHttpInterfacePort" binding="tns:BulkDocCreateHttpInterfaceBinding">
+            <soap:address location="http://localhost:8888/BulkDocGenerator"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
